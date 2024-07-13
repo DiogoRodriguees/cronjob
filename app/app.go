@@ -20,10 +20,9 @@ func loop() {
 
 func Run() {
 	log.Println("Starting app ...")
-	scheduler := schedulers.Create("TASK 1", tasks.TaskFunction, 2*time.Second)
-	scheduler2 := schedulers.Create("TASK 2", tasks.TaskFunction2, 3*time.Second)
-	schedulerList := []*schedulers.Scheduler{scheduler, scheduler2}
-	schedulers.RunAll(schedulerList)
+	tasks := tasks.InitilizeTasks()
+	schedulerList := schedulers.CreateMany(tasks)
+	schedulers.RunMany(schedulerList)
 	loop()
 	log.Println("Stopping app ...")
 }

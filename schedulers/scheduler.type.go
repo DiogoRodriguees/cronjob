@@ -1,6 +1,7 @@
 package schedulers
 
 import (
+	"backup-cronjob/tasks"
 	"log"
 	"time"
 
@@ -9,31 +10,30 @@ import (
 )
 
 type Scheduler struct {
-	Name         string
-	TaskStore    storage.NoOpStorage
-	Scheduler    scheduler.Scheduler
-	TaskFunction func()
+	TaskStore storage.NoOpStorage
+	Scheduler scheduler.Scheduler
+	Task      tasks.Task
 }
 
-func New(name string) *Scheduler {
+func New(task tasks.Task) *Scheduler {
 	return &Scheduler{
-		Name:      name,
 		TaskStore: storage.NoOpStorage{},
+		Task:      task,
 	}
 }
 
 func (s *Scheduler) Run() {
-	log.Println("Executing task: " + s.Name)
+	log.Println("Executing task: " + s.Task.Name)
 	s.Scheduler.Start()
 }
 
 func (s *Scheduler) Stop() {
-	log.Println("Stopping task: " + s.Name)
+	log.Println("Stopping task: " + s.Task.Name)
 	defer s.Scheduler.Stop()
 }
 
-func (s *Scheduler) SetConfig(time time.Duration) {
+func (s *Scheduler) Configure(interval time.Duration) {
 	newScheduler := scheduler.New(s.TaskStore)
-	newScheduler.RunEvery(time, s.TaskFunction)
+	newScheduler.RunEvery(interval, s.Task.Execute)
 	s.Scheduler = newScheduler
 }
