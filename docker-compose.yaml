@@ -1,0 +1,12 @@
+services:
+    backup_cronjob:
+        image: backup-cronjob
+        container_name: backup-cronjob
+        build:
+            context: .
+            dockerfile: Dockerfile
+        deploy:
+            resources:
+                limits:
+                    memory: 100M
+                    cpus: "0.01"
