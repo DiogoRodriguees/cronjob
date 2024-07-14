@@ -1,6 +1,6 @@
 services:
     backup_cronjob:
-        image: backup-cronjob
+        image: backup-cronjob:1.0
         container_name: backup-cronjob
         build:
             context: .
